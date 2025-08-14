@@ -14,7 +14,7 @@ var (
 var (
 	ErrEmptyEmail       = errors.New("email cannot be empty")
 	ErrEmptyPassword    = errors.New("password cannot be empty")
-	ErrTooShortPassword = errors.New("password is too short")
+	ErrNotValidPassword = errors.New("not valid password")
 	ErrEmptyName        = errors.New("name cannot be empty")
 	ErrUserNotFound     = errors.New("user not found")
 	ErrUserExists       = errors.New("user already exists")
