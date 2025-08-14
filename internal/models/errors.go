@@ -3,11 +3,11 @@ package models
 import "errors"
 
 var (
-	ErrEmptyTitle      = errors.New("todo title cannot be empty")
+	ErrEmptyTitle      = errors.New("task title cannot be empty")
 	ErrInvalidPriority = errors.New("priority must be between 1 and 5")
-	ErrTodoNotFound    = errors.New("todo not found")
+	ErrTaskNotFound    = errors.New("task not found")
 	ErrInvalidUserID   = errors.New("invalid user ID")
-	ErrInvalidTodoID   = errors.New("invalid todo ID")
+	ErrInvalidTaskID   = errors.New("invalid task ID")
 	ErrUnauthorized    = errors.New("unauthorized access")
 )
 
