@@ -5,19 +5,17 @@ import (
 	"strconv"
 )
 
-// Config holds all configuration for the application
 type Config struct {
 	Server   ServerConfig
 	Database DatabaseConfig
+	Auth     AuthConfig
 }
 
-// ServerConfig holds server configuration
 type ServerConfig struct {
 	Port string
 	Host string
 }
 
-// DatabaseConfig holds database configuration
 type DatabaseConfig struct {
 	Host     string
 	Port     string
@@ -27,7 +25,11 @@ type DatabaseConfig struct {
 	SSLMode  string
 }
 
-// LoadConfig loads configuration from environment variables
+type AuthConfig struct {
+	JwtExperationSeconds int
+	JwtSecretPhrase      string
+}
+
 func LoadConfig() *Config {
 	return &Config{
 		Server: ServerConfig{
@@ -42,10 +44,14 @@ func LoadConfig() *Config {
 			Password: getEnv("DB_PASSWORD", "todo_password"),
 			SSLMode:  getEnv("DB_SSLMODE", "disable"),
 		},
+		Auth: AuthConfig{
+			JwtExperationSeconds: getEnvAsInt("JWT_EXP_SEC", 3600),
+			// todo maybe add panic if empty
+			JwtSecretPhrase: getEnv("JWT_SECRET", ""),
+		},
 	}
 }
 
-// getEnv gets an environment variable or returns a default value
 func getEnv(key, defaultValue string) string {
 	if value := os.Getenv(key); value != "" {
 		return value
@@ -53,7 +59,6 @@ func getEnv(key, defaultValue string) string {
 	return defaultValue
 }
 
-// getEnvAsInt gets an environment variable as integer or returns a default value
 func getEnvAsInt(key string, defaultValue int) int {
 	if value := os.Getenv(key); value != "" {
 		if intValue, err := strconv.Atoi(value); err == nil {
