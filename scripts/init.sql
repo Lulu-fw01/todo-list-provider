@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS task (
     completed BOOLEAN DEFAULT FALSE,
     priority INTEGER DEFAULT 1 CHECK (priority >= 1 AND priority <= 5),
     due_date TIMESTAMP,
-    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    user_id INTEGER NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
