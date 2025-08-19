@@ -3,42 +3,69 @@ package main
 import (
 	"log"
 	"net/http"
-	"runtime/internal/sys"
+	"os"
+	"todo-list-provider/configs"
+	"todo-list-provider/internal/auth"
+	"todo-list-provider/internal/database"
+	"todo-list-provider/internal/handlers"
+	"todo-list-provider/internal/repositories"
+	"todo-list-provider/internal/services"
 
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	// Initialize Gin router
 	r := gin.Default()
-
-	// Add middleware for CORS and logging
 	r.Use(gin.Logger())
 	r.Use(gin.Recovery())
 
-	// API routes
+	configs := configs.LoadConfig()
+
+	db, err := database.NewConnection(&configs.Database)
+	if err != nil {
+		log.Fatal("Failed to connect to database:", err)
+		os.Exit(1)
+	}
+	defer db.Close()
+
+	userRepository := repositories.NewUserRepository(db.DB)
+	taskRepository := repositories.NewTaskRepository(db.DB)
+
+	userService := services.NewUserService(userRepository)
+	taskService := services.NewTaskService(taskRepository)
+	authService := auth.NewAuthService(&configs.Auth)
+
+	userHandler := handlers.NewUserHandler(&authService, userService)
+	taskHandler := handlers.NewTaskHandler(taskService)
+
 	api := r.Group("/api/v1")
 	{
-		// Todo routes
-		todos := api.Group("/todos")
-		{
-			todos.GET("/", getTodos)
-			todos.GET("/:id", getTodo)
-			todos.POST("/", createTodo)
-			todos.PUT("/:id", updateTodo)
-			todos.DELETE("/:id", deleteTodo)
-		}
-
-		// Health check
 		api.GET("/health", func(c *gin.Context) {
 			c.JSON(http.StatusOK, gin.H{"status": "ok", "message": "Todo List API is running"})
 		})
+
+		usersGr := api.Group("/user")
+		usersGr.POST("/register", userHandler.RegisterUser)
+		usersGr.POST("/login", userHandler.LoginUser)
+
+		tasksGr := api.Group("/task")
+		tasksGr.Use(authService.JWTAuthMiddleware())
+		tasksGr.GET("/", taskHandler.GetTasks)
+		tasksGr.GET("/:id", taskHandler.GetTask)
+		tasksGr.POST("/", taskHandler.CreateTask)
+		tasksGr.PUT("/:id", taskHandler.UpdateTask)
+		tasksGr.DELETE("/:id", taskHandler.DeleteTask)
+
 	}
 
-	// Start server
 	log.Println("Starting Todo List API server on :8080")
 	if err := r.Run(":8080"); err != nil {
 		log.Fatal("Failed to start server:", err)
-		sys.Exit(1)
+		os.Exit(1)
 	}
 }
+
+// func run(ctx context.Context) error {
+// 	// todo
+// 	return nil
+// }
