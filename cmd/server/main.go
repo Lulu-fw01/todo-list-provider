@@ -64,8 +64,3 @@ func main() {
 		os.Exit(1)
 	}
 }
-
-// func run(ctx context.Context) error {
-// 	// todo
-// 	return nil
-// }
