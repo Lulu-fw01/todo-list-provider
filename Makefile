@@ -1,38 +1,11 @@
-.PHONY: help build run test clean docker-build docker-run docker-stop deps
+.PHONY: help run app
 
-# Default target
-help:
-	@echo "Available commands:"
-	@echo "  build        - Build the Go application"
-	@echo "  run          - Run the application locally"
-	@echo "  test         - Run tests"
-	@echo "  clean        - Clean build artifacts"
-	@echo "  deps         - Download Go dependencies"
-	@echo "  docker-build - Build Docker image"
-	@echo "  docker-run   - Run with Docker Compose"
-	@echo "  docker-stop  - Stop Docker Compose services"
-
-# Download dependencies
 deps:
 	go mod download
 	go mod tidy
 
-# Build the application
-build: deps
-	go build -o bin/server ./cmd/server
-
-# Run the application locally
-run: build
-	./bin/server
-
-# Run tests
-test: deps
-	go test ./...
-
-# Clean build artifacts
-clean:
-	rm -rf bin/
-	go clean
+run:
+	go run ./cmd/server/main.go
 
 # Build Docker image
 docker-build:
