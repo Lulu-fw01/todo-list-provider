@@ -10,26 +10,6 @@ This project demonstrates
 ## Todo List API with User Authentication
 RESTful API for a todo list application where users can create accounts, log in, manage their tasks (create, read, update, delete). This project focuses on core backend concepts like API design, authentication, and database interactions.
 
-## Project Structure
-```
-todo-list-provider/
-├── cmd/
-│   └── server/          # Main application entry point
-├── internal/
-│   ├── handlers/        # HTTP request handlers
-│   ├── models/          # Data models and structs
-│   ├── database/        # Database connection and operations
-│   └── auth/            # Authentication middleware
-├── pkg/
-│   └── middleware/      # Custom middleware
-├── configs/             # Configuration management
-├── scripts/             # Database initialization scripts
-├── Dockerfile           # Application container
-├── docker-compose.yml   # PostgreSQL and app services
-├── Makefile            # Build and run commands
-└── go.mod              # Go module dependencies
-```
-
 ## Quick Start
 
 ### Prerequisites
