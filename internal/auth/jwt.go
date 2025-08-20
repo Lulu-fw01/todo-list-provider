@@ -12,8 +12,9 @@ import (
 )
 
 const (
-	authHeader = "Authorization"
-	userIDKey  = "userID"
+	authHeader   = "Authorization"
+	userIDKey    = "sub"
+	expiredAtKey = "exp"
 )
 
 type AuthServcie struct {
@@ -30,8 +31,8 @@ func (s *AuthServcie) CreateJWT(userId int) (string, error) {
 	expiration := time.Second * time.Duration(s.cfg.JwtExperationSeconds)
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		userIDKey:   strconv.Itoa(userId),
-		"expiredAt": time.Now().Add(expiration),
+		userIDKey:    strconv.Itoa(userId),
+		expiredAtKey: time.Now().Add(expiration),
 	})
 
 	tokenStr, err := token.SignedString([]byte(s.cfg.JwtSecretPhrase))
@@ -47,7 +48,7 @@ func (s *AuthServcie) JWTAuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		tokenStr := c.GetHeader(authHeader)
 		if tokenStr == "" {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Empty auth token"})
 			c.Abort()
 			return
 		}
