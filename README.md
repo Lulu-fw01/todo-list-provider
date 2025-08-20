@@ -110,9 +110,5 @@ The application can be configured using environment variables:
 - `DB_NAME` - Database name (default: todo_db)
 - `DB_USER` - Database user (default: todo_user)
 - `DB_PASSWORD` - Database password (default: todo_password)
-
-todo add other...
-
-## License
-
-This project is open source and available under the [MIT License](LICENSE).
+- `JWT_EXP_SEC` - experation time of jwt token in seconds (default: 3600)
+- `JWT_SECRET` - jwt secret phrase
